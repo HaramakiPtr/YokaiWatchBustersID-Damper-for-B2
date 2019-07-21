@@ -1,4 +1,4 @@
-﻿#pragma warning(disable: 4996)
+#pragma warning(disable: 4996)
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -145,67 +145,67 @@ int CheckIsYokai(int AddrYokaiID, FILE* RamBin)
 int ReturnYokaiID(FILE * RamBin)
 {
 	int YokaiID;
-	fread(&YokaiID, sizeof(int), 1, RamBin);
-	return YokaiID;
+  fread(&YokaiID, sizeof(int), 1, RamBin);
+  return YokaiID;
 }
 
 int ReturnInfPointer(int AddrYokaiID, FILE * RamBin)
 {
-	int res, ywid2, IDcount = 1, address = 0, Searchaddress[100] = { 0 };
-	SetRamOffset(RamBin);
-	fseek(RamBin, (AddrYokaiID ^ START), SEEK_CUR);
-	YOKAI_INFO.YokaiID = ReturnYokaiID(RamBin);
-	fread(&ywid2, sizeof(int), 1, RamBin);
-	YOKAI_INFO.FaceID = ywid2;
-	printf("\n|--{ %08X }--|\n|\t\t |\n", ywid2);
-	SetRamOffset(RamBin);
-	while (!(feof(RamBin)))
-	{
-		fread(&res, sizeof(int), 1, RamBin);
-		if (res == ywid2)
-		{
-			printf("|  [%02d]%08X  |\n", IDcount, address | START);
-			Searchaddress[IDcount - 1] = address;
-			IDcount++;
-		}
-		address += sizeof(int);
-	}
-	printf("|\t\t |\n|--{ %08X }--|\n\n", ywid2);
-	return (Searchaddress[0] + 4) ^ START;
+  int res, ywid2, IDcount = 1, address = 0, Searchaddress[100] = { 0 };
+  SetRamOffset(RamBin);
+  fseek(RamBin, (AddrYokaiID ^ START), SEEK_CUR);
+  YOKAI_INFO.YokaiID = ReturnYokaiID(RamBin);
+  fread(&ywid2, sizeof(int), 1, RamBin);
+  YOKAI_INFO.FaceID = ywid2;
+  printf("\n|--{ %08X }--|\n|\t\t |\n", ywid2);
+  SetRamOffset(RamBin);
+  while (!(feof(RamBin)))
+  {
+    fread(&res, sizeof(int), 1, RamBin);
+    if (res == ywid2)
+    {
+      printf("|  [%02d]%08X  |\n", IDcount, address | START);
+      Searchaddress[IDcount - 1] = address;
+      IDcount++;
+    }
+    address += sizeof(int);
+  }
+  printf("|\t\t |\n|--{ %08X }--|\n\n", ywid2);
+  return (Searchaddress[0] + 4) ^ START;
 }
 
 int MoveToAddressValue(int YokaiPointer, FILE * RamBin)
 {
-	int InfoPointer;
-	SetRamOffset(RamBin);
-	fseek(RamBin, (YokaiPointer ^ START), SEEK_CUR);
-	fread(&InfoPointer, sizeof(int), 1, RamBin);
-	return InfoPointer;
+  int InfoPointer;
+  SetRamOffset(RamBin);
+  fseek(RamBin, (YokaiPointer ^ START), SEEK_CUR);
+  fread(&InfoPointer, sizeof(int), 1, RamBin);
+  return InfoPointer;
 }
 
 int ReturnYokaiNameLen(int NameAddress, FILE * RamBin)
 {
-	char strCounter = 0, scl = 1;
-	SetRamOffset(RamBin);
-	fseek(RamBin, (NameAddress ^ START), SEEK_CUR);
-	while (scl != '\0')
-	{
-		fread(&scl, sizeof(char), 1, RamBin);
-		strCounter++;
-	}
-	return strCounter;
+  char strCounter = 0, scl = 1;
+  SetRamOffset(RamBin);
+  fseek(RamBin, (NameAddress ^ START), SEEK_CUR);
+  while (scl != '\0')
+  {
+    fread(&scl, sizeof(char), 1, RamBin);
+    strCounter++;
+  }
+  return strCounter;
 }
 
 char* YokaiNameStr(int NameAddress, FILE * RamBin)
 {
 
-	char i, NameLen = ReturnYokaiNameLen(NameAddress, RamBin);
-	char* YName = (char*)malloc(sizeof(char) * NameLen);
-	SetRamOffset(RamBin);
-	fseek(RamBin, (NameAddress ^ START), SEEK_CUR);
-	for (i = 0; i < NameLen; i++)
-	{
-		fread(&YName[i], sizeof(char), 1, RamBin);
-	}
-	return YName;
+  char i, NameLen = ReturnYokaiNameLen(NameAddress, RamBin);
+  char* YName = (char*)malloc(sizeof(char) * NameLen);
+  SetRamOffset(RamBin);
+  fseek(RamBin, (NameAddress ^ START), SEEK_CUR);
+  for (i = 0; i < NameLen; i++)
+  {
+    fread(&YName[i], sizeof(char), 1, RamBin);
+  }
+  return YName;
 }
